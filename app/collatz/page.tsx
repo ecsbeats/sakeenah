@@ -105,7 +105,7 @@ export default function Collatz() {
             <Card className="max-w-96">
                 <CardHeader>
                     <CardTitle>Collatz Demo</CardTitle>
-                    <CardDescription>September 3rd, 2024</CardDescription>
+                    <CardDescription>September 21st, 2024</CardDescription>
                 </CardHeader>
                 <CardContent>
                         <p>This demo showcases a modified version of the collatz conjecture from Sakeenah Blumenfeld with new rules.</p>
