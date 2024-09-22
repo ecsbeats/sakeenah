@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex flex-col gap-4">
+    <main className="flex flex-col gap-4 w-full justify-center items-center">
       <div>
         <h1 className="text-4xl lg:text-5xl">
           Sakeenah

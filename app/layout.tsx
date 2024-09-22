@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Schibsted_Grotesk } from "next/font/google";
 import clsx from "clsx";
 import "./globals.css";
@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   description: "By Adam Blumenfeld",
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-          <body className={clsx(schibsted_grotesk.className, "bg-zinc-50", "text-zinc-900", "flex flex-row min-h-screen sm:justify-center sm:items-center")}>{children}</body>
+          <body className={clsx(schibsted_grotesk.className, "bg-zinc-50", "text-zinc-900", "flex flex-row min-h-screen md:justify-center md:items-center")}>{children}</body>
       </html>
   );
 }
