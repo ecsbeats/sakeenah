@@ -122,12 +122,12 @@ export default function Collatz() {
                         </form>
                 </CardContent>
             </Card>
-            <Tabs>
+            <Tabs defaultValue="chart">
                 <Card className="h-80 w-full">
                     <CardHeader>
                         <div>
                             <TabsList>
-                                <TabsTrigger value="chart" defaultChecked={true}>Chart</TabsTrigger>
+                                <TabsTrigger value="chart">Chart</TabsTrigger>
                                 <TabsTrigger value="table">Table</TabsTrigger>
                             </TabsList>
                         </div>
