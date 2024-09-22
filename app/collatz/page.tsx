@@ -78,7 +78,7 @@ const computeSeries = (seed: number) => {
             ...nextNum
         })
         n = nextNum.number
-        if (usedNumbers.has(n)) {
+        if (n == 11) {
             break
         }
         usedNumbers.add(n)
@@ -108,7 +108,7 @@ export default function Collatz() {
                     <CardDescription>September 21st, 2024</CardDescription>
                 </CardHeader>
                 <CardContent>
-                        <p>This demo showcases a modified version of the collatz conjecture from Sakeenah Blumenfeld with new rules.</p>
+                        <p>This demo showcases a modified version of the collatz conjecture from Kin Blumenfeld with new rules.</p>
                         <form onSubmit={(e) => {
                             e.preventDefault()
                             setChartData(computeSeries(seed))
@@ -167,11 +167,7 @@ export default function Collatz() {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={3}>Looped Number</TableCell>
-                                        <TableCell className="text-right">{chartData[chartData.length - 1].number}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell colSpan={3}>Num Iterations</TableCell>
+                                        <TableCell colSpan={3}>Number of Iterations Before Loop</TableCell>
                                         <TableCell className="text-right">{chartData.length - 1}</TableCell>
                                     </TableRow>
                                 </TableFooter>

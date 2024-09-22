@@ -7,7 +7,7 @@ export default function Home() {
     <main className="flex flex-col gap-4 w-full justify-center items-center">
       <div>
         <h1 className="text-4xl lg:text-5xl">
-          Sakeenah
+          Kin Blumenfeld
         </h1>
       </div>
       <div>

@@ -8,8 +8,8 @@ import { MathJaxContext } from "better-react-mathjax";
 const schibsted_grotesk = Schibsted_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sakeenah",
-  description: "By Adam Blumenfeld",
+  title: "Kin Blumenfeld",
+  description: "Collatz conjecture",
 };
 
 export const viewport: Viewport = {
