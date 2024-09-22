@@ -101,8 +101,8 @@ export default function Collatz() {
     } satisfies ChartConfig
     
     return (
-        <main className="flex flex-row gap-4">
-            <Card className="max-w-96">
+        <main className="flex flex-col p-10 max-h-screen md:flex-row gap-4">
+            <Card className="w-full h-80 md:max-w-96">
                 <CardHeader>
                     <CardTitle>Collatz Demo</CardTitle>
                     <CardDescription>September 21st, 2024</CardDescription>
@@ -123,7 +123,7 @@ export default function Collatz() {
                 </CardContent>
             </Card>
             <Tabs defaultValue="chart">
-                <Card className="h-80 w-full">
+                <Card className="min-h-80 md:h-80 w-full">
                     <CardHeader>
                         <div>
                             <TabsList>

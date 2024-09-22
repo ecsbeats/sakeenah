@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-          <body className={clsx(schibsted_grotesk.className, "bg-zinc-50", "text-zinc-900", "flex flex-row min-h-screen justify-center items-center")}>{children}</body>
+          <body className={clsx(schibsted_grotesk.className, "bg-zinc-50", "text-zinc-900", "flex flex-row min-h-screen sm:justify-center sm:items-center")}>{children}</body>
       </html>
   );
 }
