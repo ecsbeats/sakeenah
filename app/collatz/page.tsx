@@ -104,7 +104,7 @@ export default function Collatz() {
         <main className="flex flex-col p-10 max-w-screen max-h-screen md:flex-row gap-4">
             <Card className="w-full h-80 md:max-w-96">
                 <CardHeader>
-                    <CardTitle>Collatz Demo</CardTitle>
+                    <CardTitle>Alternative Collatz Demo</CardTitle>
                     <CardDescription>September 21st, 2024</CardDescription>
                 </CardHeader>
                 <CardContent>
