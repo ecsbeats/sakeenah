@@ -2,124 +2,149 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Icon } from "@iconify/react";
+import { Icon } from "@iconify/react"
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useState } from "react"
+import { useState, useCallback } from "react"
+import { variants } from "./computations"
+import type { CollatzVariant } from "./types"
 
-const computeNextNum = (n: number): { number: number; type: string; operation: string } => {
-    const modFive = Math.abs(n) % 5
-    switch (modFive) {
-        case 0:
-            return {
-                number: n / 5,
-                type: "5a", 
-                operation: "n / 5"
-            }
-        case 4:
-            return {
-                number: (7 * n) + 2,
-                type: "5a + 4", 
-                operation: "7n + 2"
-            }
-        case 3:
-            return {
-                number: (7 * n) + 4,
-                type: "5a + 3", 
-                operation: "7n + 4"
-            }
-        case 2:
-            return {
-                number: (7 * n) + 6,
-                type: "5a + 2", 
-                operation: "7n + 6"
-            }
-        case 1:
-            return {
-                number: (7 * n) + 3,
-                type: "5a + 1",
-                operation: "7n + 3"
-            }
+// Input validation rules for each variant
+const variantValidation: Record<string, { min: number; max: number; message: string }> = {
+    'blu': {
+        min: 1,
+        max: 1000,
+        message: 'Please enter a positive number between 1 and 1000'
+    },
+    'classic': {
+        min: 1,
+        max: 1000,
+        message: 'Please enter a positive number between 1 and 1000'
+    },
+    'negative': {
+        min: -1000,
+        max: -1,
+        message: 'Please enter a negative number between -1000 and -1'
+    },
+    'blu-negative': {
+        min: -1000,
+        max: -1,
+        message: 'Please enter a negative number between -1000 and -1'
     }
-    return {
-        number: -1,
-        type: "ERROR",
-        operation: "ERROR"
-    }
-}
-
-const computeSeries = (seed: number) => {
-    const usedNumbers = new Set()
-    usedNumbers.add(seed)
-    const series = []
-    series.push({
-        iteration: 0,
-        number: seed,
-        type: "Seed",
-        operation: ""
-    })
-
-    let n = seed
-    for (let i = 1 ;; i++) {
-        const nextNum = computeNextNum(n)
-        series.push({
-            iteration: i,
-            ...nextNum
-        })
-        n = nextNum.number
-        if (n == 11) {
-            break
-        }
-        usedNumbers.add(n)
-    }
-    return series
 }
 
 export default function Collatz() {
-    const [chartData, setChartData] = useState(computeSeries(15))
-    const [seed, setSeed] = useState(15)
+    const [selectedVariant, setSelectedVariant] = useState<CollatzVariant>(variants[0])
+    const [variantSeeds, setVariantSeeds] = useState<Record<string, number>>({
+        'blu': 15,
+        'classic': 15,
+        'negative': -15,
+        'blu-negative': -15
+    })
+    const [error, setError] = useState<string>('')
+    const [chartData, setChartData] = useState(selectedVariant.compute(variantSeeds[selectedVariant.id]))
+    
+    const validateAndCompute = useCallback((variant: CollatzVariant, value: number) => {
+        const rules = variantValidation[variant.id]
+        if (isNaN(value)) {
+            setError('Please enter a valid number')
+            return false
+        }
+        if (value < rules.min || value > rules.max) {
+            setError(rules.message)
+            return false
+        }
+        setError('')
+        return true
+    }, [])
+
+    const handleSeedChange = (value: number) => {
+        if (validateAndCompute(selectedVariant, value)) {
+            setVariantSeeds(prev => ({
+                ...prev,
+                [selectedVariant.id]: value
+            }))
+        }
+    }
+
+    const handleVariantChange = (variantId: string) => {
+        const variant = variants.find(v => v.id === variantId)!
+        setSelectedVariant(variant)
+        const seed = variantSeeds[variantId]
+        if (validateAndCompute(variant, seed)) {
+            setChartData(variant.compute(seed))
+        }
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        const seed = variantSeeds[selectedVariant.id]
+        if (validateAndCompute(selectedVariant, seed)) {
+            setChartData(selectedVariant.compute(seed))
+        }
+    }
+    
     const chartConfig = {
         desktop: {
-          label: "Desktop",
-          color: "#2563eb",
-        },
-        mobile: {
-          label: "Mobile",
-          color: "#60a5fa",
-        },
-    } satisfies ChartConfig
+            label: "Desktop",
+            color: "#2563eb",
+        }
+    }
     
     return (
         <main className="flex flex-col p-10 max-w-screen max-h-screen md:flex-row gap-4">
-            <Card className="w-full h-80 md:max-w-96">
+            <Card className="w-full h-fit md:max-w-96">
                 <CardHeader>
                     <CardTitle>Alternative Collatz Demo</CardTitle>
-                    <CardDescription>September 21st, 2024</CardDescription>
+                    <CardDescription>Mathematical sequence variations</CardDescription>
                 </CardHeader>
                 <CardContent>
-                        <p>This demo showcases a modified version of the collatz conjecture from Kin Blumenfeld with new rules.</p>
-                        <form onSubmit={(e) => {
-                            e.preventDefault()
-                            setChartData(computeSeries(seed))
-                        }}>
-                            <div className="flex w-full items-center my-4 space-x-2">
-                                <Input type="number" placeholder="Seed number" onChange={(e) => {
-                                    setSeed(e.target.valueAsNumber)
-                                }}/>
-                                <Button type="submit"><Icon icon="mdi:arrow-right" className="text-xl" /></Button>
+                    <div className="space-y-4">
+                        <Select 
+                            defaultValue={selectedVariant.id}
+                            onValueChange={handleVariantChange}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select variant" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {variants.map(variant => (
+                                    <SelectItem key={variant.id} value={variant.id}>
+                                        {variant.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <div className="text-sm space-y-2">
+                            <p className="text-zinc-500">{selectedVariant.description}</p>
+                            {error && <p className="text-red-500">{error}</p>}
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className="flex w-full items-center space-x-2">
+                                <Input 
+                                    type="number" 
+                                    placeholder="Seed number" 
+                                    value={variantSeeds[selectedVariant.id]}
+                                    onChange={(e) => handleSeedChange(e.target.valueAsNumber)}
+                                    className={error ? 'border-red-500' : ''}
+                                />
+                                <Button type="submit">
+                                    <Icon icon="mdi:arrow-right" className="text-xl" />
+                                </Button>
                             </div>
                         </form>
+                    </div>
                 </CardContent>
             </Card>
             <Tabs defaultValue="chart">
