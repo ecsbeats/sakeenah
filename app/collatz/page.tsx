@@ -16,7 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import { variants } from "./computations"
 import type { CollatzVariant } from "./types"
 import { ScrollIndicator } from "@/components/ui/scroll-indicator"
@@ -47,16 +47,11 @@ const variantValidation: Record<string, { min: number; max: number; message: str
 
 export default function Collatz() {
     const [selectedVariant, setSelectedVariant] = useState<CollatzVariant>(variants[0])
-    const [variantSeeds, setVariantSeeds] = useState<Record<string, number>>({
-        'blu': 15,
-        'classic': 15,
-        'negative': -15,
-        'blu-negative': -15
-    })
+    const [inputValue, setInputValue] = useState<string>('') // Separate input state
     const [error, setError] = useState<string>('')
-    const [chartData, setChartData] = useState(selectedVariant.compute(variantSeeds[selectedVariant.id]))
+    const [chartData, setChartData] = useState([])
     const tableContainerRef = useRef<HTMLDivElement>(null)
-    
+
     const validateAndCompute = useCallback((variant: CollatzVariant, value: number) => {
         const rules = variantValidation[variant.id]
         if (isNaN(value)) {
@@ -71,32 +66,32 @@ export default function Collatz() {
         return true
     }, [])
 
-    const handleSeedChange = (value: number) => {
-        if (validateAndCompute(selectedVariant, value)) {
-            setVariantSeeds(prev => ({
-                ...prev,
-                [selectedVariant.id]: value
-            }))
-        }
+    const handleInputChange = (value: string) => {
+        setInputValue(value); // Update input value
     }
 
     const handleVariantChange = (variantId: string) => {
         const variant = variants.find(v => v.id === variantId)!
         setSelectedVariant(variant)
-        const seed = variantSeeds[variantId]
-        if (validateAndCompute(variant, seed)) {
-            setChartData(variant.compute(seed))
-        }
+        setInputValue(''); // Clear input when variant changes
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        const seed = variantSeeds[selectedVariant.id]
+        const seed = inputValue === '' ? NaN : parseFloat(inputValue); // Handle empty input
         if (validateAndCompute(selectedVariant, seed)) {
-            setChartData(selectedVariant.compute(seed))
+            setChartData(selectedVariant.compute(seed)); // Compute only on submit
         }
     }
-    
+
+    // Run calculation when the seed is loaded into the input
+    useEffect(() => {
+        const seed = inputValue === '' ? NaN : parseFloat(inputValue);
+        if (!isNaN(seed)) {
+            setChartData(selectedVariant.compute(seed));
+        }
+    }, [selectedVariant.id, inputValue]);
+
     const chartConfig = {
         desktop: {
             label: "Desktop",
@@ -135,10 +130,10 @@ export default function Collatz() {
                         <form onSubmit={handleSubmit}>
                             <div className="flex w-full items-center space-x-2">
                                 <Input 
-                                    type="number" 
+                                    type="text" // Changed to text input
                                     placeholder="Seed number" 
-                                    value={variantSeeds[selectedVariant.id]}
-                                    onChange={(e) => handleSeedChange(e.target.valueAsNumber)}
+                                    value={inputValue} // Use separate input state
+                                    onChange={(e) => handleInputChange(e.target.value)}
                                     className={error ? 'border-red-500' : ''}
                                 />
                                 <Button type="submit">

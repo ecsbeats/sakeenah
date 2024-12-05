@@ -1,26 +1,46 @@
 import { SeriesItem, CollatzVariant } from "./types"
 
+// Helper function to detect loops
+function detectLoop(current: number, seen: Set<number>): boolean {
+    if (seen.has(current)) {
+        return true; // Loop detected
+    }
+    seen.add(current);
+    return false;
+}
+
 // Collatz Blu
 function computeCollatzBlu(seed: number): SeriesItem[] {
     const series: SeriesItem[] = []
     let current = seed
     let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
 
     while (current !== 0 && current !== 4 && current !== 16) {
-        const isEven = current % 2 === 0
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        const isEven = current % 2 === 0;
         const operation = isEven ? 
             `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `(${current} - 1) ÷ 2 = ${(current - 1) / 2}`
+            `(${current} - 1) ÷ 2 = ${(current - 1) / 2}`;
 
         series.push({
             iteration,
             number: current,
             type: isEven ? "Even" : "Odd",
             operation
-        })
+        });
 
-        current = isEven ? current * 3 + 1 : (current - 1) / 2
-        iteration++
+        current = isEven ? current * 3 + 1 : (current - 1) / 2;
+        iteration++;
     }
 
     series.push({
@@ -28,9 +48,9 @@ function computeCollatzBlu(seed: number): SeriesItem[] {
         number: current,
         type: "Terminal",
         operation: `Reached ${current}`
-    })
+    });
 
-    return series
+    return series;
 }
 
 // Classic Collatz
@@ -38,22 +58,33 @@ function computeCollatzClassic(seed: number): SeriesItem[] {
     const series: SeriesItem[] = []
     let current = seed
     let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
 
     while (current !== 1) {
-        const isOdd = current % 2 !== 0
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        const isOdd = current % 2 !== 0;
         const operation = isOdd ? 
             `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `${current} ÷ 2 = ${current / 2}`
+            `${current} ÷ 2 = ${current / 2}`;
 
         series.push({
             iteration,
             number: current,
             type: isOdd ? "Odd" : "Even",
             operation
-        })
+        });
 
-        current = isOdd ? current * 3 + 1 : current / 2
-        iteration++
+        current = isOdd ? current * 3 + 1 : current / 2;
+        iteration++;
     }
 
     series.push({
@@ -61,9 +92,9 @@ function computeCollatzClassic(seed: number): SeriesItem[] {
         number: current,
         type: "Terminal",
         operation: "Reached 1"
-    })
+    });
 
-    return series
+    return series;
 }
 
 // Collatz Negative
@@ -71,22 +102,33 @@ function computeCollatzNegative(seed: number): SeriesItem[] {
     const series: SeriesItem[] = []
     let current = seed
     let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
 
     while (current !== -2) {
-        const isEven = current % 2 === 0
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        const isEven = current % 2 === 0;
         const operation = isEven ? 
             `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `(${current} - 1) ÷ 2 = ${(current - 1) / 2}`
+            `(${current} - 1) ÷ 2 = ${(current - 1) / 2}`;
 
         series.push({
             iteration,
             number: current,
             type: isEven ? "Even" : "Odd",
             operation
-        })
+        });
 
-        current = isEven ? current * 3 + 1 : (current - 1) / 2
-        iteration++
+        current = isEven ? current * 3 + 1 : (current - 1) / 2;
+        iteration++;
     }
 
     series.push({
@@ -94,9 +136,9 @@ function computeCollatzNegative(seed: number): SeriesItem[] {
         number: current,
         type: "Terminal",
         operation: "Reached -2"
-    })
+    });
 
-    return series
+    return series;
 }
 
 // Collatz Blu Negative
@@ -104,22 +146,33 @@ function computeCollatzBluNegative(seed: number): SeriesItem[] {
     const series: SeriesItem[] = []
     let current = seed
     let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
 
     while (current !== -1 && current !== -5 && current !== -17) {
-        const isOdd = current % 2 !== 0
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        const isOdd = current % 2 !== 0;
         const operation = isOdd ? 
             `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `${current} ÷ 2 = ${current / 2}`
+            `${current} ÷ 2 = ${current / 2}`;
 
         series.push({
             iteration,
             number: current,
             type: isOdd ? "Odd" : "Even",
             operation
-        })
+        });
 
-        current = isOdd ? current * 3 + 1 : current / 2
-        iteration++
+        current = isOdd ? current * 3 + 1 : current / 2;
+        iteration++;
     }
 
     series.push({
@@ -127,9 +180,9 @@ function computeCollatzBluNegative(seed: number): SeriesItem[] {
         number: current,
         type: "Terminal",
         operation: `Reached ${current}`
-    })
+    });
 
-    return series
+    return series;
 }
 
 export const variants: CollatzVariant[] = [
