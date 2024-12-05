@@ -16,9 +16,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { variants } from "./computations"
 import type { CollatzVariant } from "./types"
+import { ScrollIndicator } from "@/components/ui/scroll-indicator"
 
 // Input validation rules for each variant
 const variantValidation: Record<string, { min: number; max: number; message: string }> = {
@@ -54,6 +55,7 @@ export default function Collatz() {
     })
     const [error, setError] = useState<string>('')
     const [chartData, setChartData] = useState(selectedVariant.compute(variantSeeds[selectedVariant.id]))
+    const tableContainerRef = useRef<HTMLDivElement>(null)
     
     const validateAndCompute = useCallback((variant: CollatzVariant, value: number) => {
         const rules = variantValidation[variant.id]
@@ -103,7 +105,7 @@ export default function Collatz() {
     }
     
     return (
-        <main className="flex flex-col p-10 max-w-screen max-h-screen md:flex-row gap-4">
+        <main className="flex flex-col p-10 min-h-[calc(100vh-5rem)] max-w-screen md:min-h-0 md:max-h-screen md:flex-row gap-4">
             <Card className="w-full h-fit md:max-w-96">
                 <CardHeader>
                     <CardTitle>Alternative Collatz Demo</CardTitle>
@@ -147,8 +149,8 @@ export default function Collatz() {
                     </div>
                 </CardContent>
             </Card>
-            <Tabs defaultValue="chart">
-                <Card className="min-h-80 md:h-80 w-full">
+            <Tabs defaultValue="chart" className="flex-1">
+                <Card className="h-[calc(100vh-12rem)] md:h-80">
                     <CardHeader>
                         <div>
                             <TabsList>
@@ -157,9 +159,9 @@ export default function Collatz() {
                             </TabsList>
                         </div>
                     </CardHeader>
-                    <TabsContent value="chart">
-                        <CardContent>
-                            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+                    <TabsContent value="chart" className="h-[calc(100%-5rem)]">
+                        <CardContent className="h-full">
+                            <ChartContainer config={chartConfig} className="h-full w-full">
                                 <LineChart accessibilityLayer data={chartData}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="iteration" />
@@ -169,34 +171,39 @@ export default function Collatz() {
                             </ChartContainer>
                         </CardContent>
                     </TabsContent>
-                    <TabsContent value="table">
-                        <CardContent className="overflow-y-scroll max-h-[200px]">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Iteration</TableHead>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Operation</TableHead>
-                                        <TableHead className="text-right">Number</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {chartData.map((iteration) => (
-                                        <TableRow key={iteration.iteration}>
-                                            <TableCell className="font-medium">{iteration.iteration}</TableCell>
-                                            <TableCell>{iteration.type}</TableCell>
-                                            <TableCell>{iteration.operation}</TableCell>
-                                            <TableCell className="text-right">{iteration.number}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={3}>Number of Iterations Before Loop</TableCell>
-                                        <TableCell className="text-right">{chartData.length - 1}</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
+                    <TabsContent value="table" className="h-[calc(100%-5rem)]">
+                        <CardContent className="h-full">
+                            <div className="relative h-full">
+                                <div ref={tableContainerRef} className="h-full overflow-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-[100px]">Iteration</TableHead>
+                                                <TableHead>Type</TableHead>
+                                                <TableHead>Operation</TableHead>
+                                                <TableHead className="text-right">Number</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {chartData.map((iteration) => (
+                                                <TableRow key={iteration.iteration}>
+                                                    <TableCell className="font-medium">{iteration.iteration}</TableCell>
+                                                    <TableCell>{iteration.type}</TableCell>
+                                                    <TableCell>{iteration.operation}</TableCell>
+                                                    <TableCell className="text-right">{iteration.number}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TableCell colSpan={3}>Number of Iterations Before Loop</TableCell>
+                                                <TableCell className="text-right">{chartData.length - 1}</TableCell>
+                                            </TableRow>
+                                        </TableFooter>
+                                    </Table>
+                                </div>
+                                <ScrollIndicator containerRef={tableContainerRef} />
+                            </div>
                         </CardContent>
                     </TabsContent>
                 </Card>
