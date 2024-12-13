@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table"
 import { useState, useCallback, useRef, useEffect } from "react"
 import { variants } from "./computations"
-import type { CollatzVariant } from "./types"
+import type { CollatzVariant, SeriesItem } from "./types"
 import { ScrollIndicator } from "@/components/ui/scroll-indicator"
 
 // Input validation rules for each variant
@@ -49,7 +49,7 @@ export default function Collatz() {
     const [selectedVariant, setSelectedVariant] = useState<CollatzVariant>(variants[0])
     const [inputValue, setInputValue] = useState<string>('') // Separate input state
     const [error, setError] = useState<string>('')
-    const [chartData, setChartData] = useState([])
+    const [chartData, setChartData] = useState<SeriesItem[]>([])
     const tableContainerRef = useRef<HTMLDivElement>(null)
 
     const validateAndCompute = useCallback((variant: CollatzVariant, value: number) => {
