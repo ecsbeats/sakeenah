@@ -192,7 +192,7 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
     let iteration = 0
     const seen = new Set<number>(); // Track seen numbers
 
-    while (current !== 1) {
+    while (true) {  // Run until we detect a loop
         if (detectLoop(current, seen)) {
             series.push({
                 iteration,
@@ -206,7 +206,7 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
         const isEven = current % 2 === 0;
         const operation = isEven ?
             `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `${current} ÷ 2 = ${current / 2}`;
+            `${current} ÷ 2 = ${Math.floor(current / 2)}`; // Use Math.floor to avoid decimals
 
         series.push({
             iteration,
@@ -215,16 +215,9 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
             operation
         });
 
-        current = isEven ? current * 3 + 1 : current / 2;
+        current = isEven ? current * 3 + 1 : Math.floor(current / 2); // Use Math.floor here too
         iteration++;
     }
-
-    series.push({
-        iteration,
-        number: current,
-        type: "Terminal",
-        operation: "Reached 1"
-    });
 
     return series;
 }
