@@ -96,11 +96,15 @@ export default function Collatz() {
         desktop: {
             label: "Desktop",
             color: "#2563eb",
+            height: "100%",
+            width: "100%",
+            margin: { top: 10, right: 10, bottom: 20, left: 10 },
+            responsive: true
         }
     }
     
     return (
-        <main className="flex flex-col p-10 min-h-[calc(100vh-5rem)] max-w-screen md:min-h-0 md:max-h-screen md:flex-row gap-4">
+        <main className="flex flex-col p-10 min-h-[calc(100vh-5rem)] max-w-full md:min-h-0 md:max-w-screen md:max-h-screen md:flex-row gap-4">
             <Card className="w-full h-fit md:max-w-96">
                 <CardHeader>
                     <CardTitle>Alternative Collatz Demo</CardTitle>
