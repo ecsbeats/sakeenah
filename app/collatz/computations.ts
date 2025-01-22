@@ -190,34 +190,72 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
     const series: SeriesItem[] = []
     let current = seed
     let iteration = 0
-    const seen = new Set<number>(); // Track seen numbers
 
-    while (true) {  // Run until we detect a loop
-        if (detectLoop(current, seen)) {
-            series.push({
-                iteration,
-                number: current,
-                type: "Loop",
-                operation: `Loop detected at ${current}`
-            });
-            break; // Exit on loop detection
+    // Add initial seed
+    series.push({
+        iteration,
+        number: current,
+        type: "Seed",
+        operation: ""
+    });
+    iteration++;
+
+    while (current !== 11) {  // Run until we reach 11
+        const modFive = Math.abs(current) % 5;
+        let nextNum: number;
+        let type: string;
+        let operation: string;
+
+        switch (modFive) {
+            case 0:
+                nextNum = current / 5;
+                type = "5a";
+                operation = `${current} ÷ 5 = ${nextNum}`;
+                break;
+            case 4:
+                nextNum = (7 * current) + 2;
+                type = "5a + 4";
+                operation = `7 × ${current} + 2 = ${nextNum}`;
+                break;
+            case 3:
+                nextNum = (7 * current) + 4;
+                type = "5a + 3";
+                operation = `7 × ${current} + 4 = ${nextNum}`;
+                break;
+            case 2:
+                nextNum = (7 * current) + 6;
+                type = "5a + 2";
+                operation = `7 × ${current} + 6 = ${nextNum}`;
+                break;
+            case 1:
+                nextNum = (7 * current) + 3;
+                type = "5a + 1";
+                operation = `7 × ${current} + 3 = ${nextNum}`;
+                break;
+            default:
+                nextNum = -1;
+                type = "ERROR";
+                operation = "ERROR";
         }
-
-        const isEven = current % 2 === 0;
-        const operation = isEven ?
-            `${current} × 3 + 1 = ${current * 3 + 1}` :
-            `${current} ÷ 2 = ${Math.floor(current / 2)}`; // Use Math.floor to avoid decimals
 
         series.push({
             iteration,
-            number: current,
-            type: isEven ? "Even" : "Odd",
+            number: nextNum,
+            type,
             operation
         });
 
-        current = isEven ? current * 3 + 1 : Math.floor(current / 2); // Use Math.floor here too
+        current = nextNum;
         iteration++;
     }
+
+    // Add final state when reaching 11
+    series.push({
+        iteration,
+        number: current,
+        type: "Terminal",
+        operation: "Reached 11"
+    });
 
     return series;
 }
@@ -251,6 +289,6 @@ export const variants: CollatzVariant[] = [
         name: "Collatz Alternative",
         id: "alternative",
         compute: computeCollatzAlternative,
-        description: "A variation where even numbers are multiplied by 3 and increased by 1, while odd numbers are halved. This creates a different pattern than the classic conjecture while maintaining similar structural elements."
+        description: "A unique variation based on modulo 5. Numbers are transformed using different rules: if divisible by 5, divide by 5; otherwise multiply by 7 and add a constant based on the remainder. All sequences terminate at 11."
     }
 ] 
