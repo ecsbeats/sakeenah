@@ -224,16 +224,16 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
 
 export const variants: CollatzVariant[] = [
     {
-        name: "Collatz Blu",
-        id: "blu",
-        compute: computeCollatzBlu,
-        description: "A variation where even numbers are multiplied by 3 and increased by 1, while odd numbers are decreased by 1 and halved. The sequence terminates at 0, 4, or 16, demonstrating different terminal points than the classic conjecture."
-    },
-    {
         name: "Collatz Classic",
         id: "classic",
         compute: computeCollatzClassic,
         description: "The original Collatz conjecture: odd numbers are multiplied by 3 and increased by 1, while even numbers are halved. This sequence always reaches 1, creating the famous '3n + 1' loop."
+    },
+    {
+        name: "Collatz Blu",
+        id: "blu",
+        compute: computeCollatzBlu,
+        description: "A variation where even numbers are multiplied by 3 and increased by 1, while odd numbers are decreased by 1 and halved. The sequence terminates at 0, 4, or 16, demonstrating different terminal points than the classic conjecture."
     },
     {
         name: "Collatz Negative",
