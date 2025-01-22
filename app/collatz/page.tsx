@@ -42,6 +42,11 @@ const variantValidation: Record<string, { min: number; max: number; message: str
         min: -1000,
         max: -1,
         message: 'Please enter a negative number between -1000 and -1'
+    },
+    'alternative': {
+        min: 1,
+        max: 1000,
+        message: 'Please enter a positive number between 1 and 1000'
     }
 }
 

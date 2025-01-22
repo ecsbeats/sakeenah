@@ -185,6 +185,50 @@ function computeCollatzBluNegative(seed: number): SeriesItem[] {
     return series;
 }
 
+// Collatz Alternative
+function computeCollatzAlternative(seed: number): SeriesItem[] {
+    const series: SeriesItem[] = []
+    let current = seed
+    let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
+
+    while (current !== 1) {
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        const isEven = current % 2 === 0;
+        const operation = isEven ?
+            `${current} × 3 + 1 = ${current * 3 + 1}` :
+            `${current} ÷ 2 = ${current / 2}`;
+
+        series.push({
+            iteration,
+            number: current,
+            type: isEven ? "Even" : "Odd",
+            operation
+        });
+
+        current = isEven ? current * 3 + 1 : current / 2;
+        iteration++;
+    }
+
+    series.push({
+        iteration,
+        number: current,
+        type: "Terminal",
+        operation: "Reached 1"
+    });
+
+    return series;
+}
+
 export const variants: CollatzVariant[] = [
     {
         name: "Collatz Blu",
@@ -209,5 +253,11 @@ export const variants: CollatzVariant[] = [
         id: "blu-negative",
         compute: computeCollatzBluNegative,
         description: "A negative-space variation where odd numbers follow '3n + 1' and even numbers are halved. Sequences terminate at -1, -5, or -17, mirroring the multiple terminal points of Collatz Blu."
+    },
+    {
+        name: "Collatz Alternative",
+        id: "alternative",
+        compute: computeCollatzAlternative,
+        description: "A variation where even numbers are multiplied by 3 and increased by 1, while odd numbers are halved. This creates a different pattern than the classic conjecture while maintaining similar structural elements."
     }
 ] 
