@@ -260,6 +260,84 @@ function computeCollatzAlternative(seed: number): SeriesItem[] {
     return series;
 }
 
+// Collatz Alternative A
+function computeCollatzAlternativeA(seed: number): SeriesItem[] {
+    const series: SeriesItem[] = []
+    let current = seed
+    let iteration = 0
+    const seen = new Set<number>(); // Track seen numbers
+
+    while (current !== 1 && current !== 6) {
+        if (detectLoop(current, seen)) {
+            series.push({
+                iteration,
+                number: current,
+                type: "Loop",
+                operation: `Loop detected at ${current}`
+            });
+            break; // Exit on loop detection
+        }
+
+        let nextNum: number;
+        let type: string;
+        let operation: string;
+
+        if (current % 5 === 0) {
+            nextNum = current / 5;
+            type = "Div5";
+            operation = `${current} ÷ 5 = ${nextNum}`;
+        } else {
+            const modFive = current % 5;
+            switch (modFive) {
+                case 2:
+                    nextNum = 7 * current + 1;
+                    type = "5a + 2";
+                    operation = `7 × ${current} + 1 = ${nextNum}`;
+                    break;
+                case 4:
+                    nextNum = 7 * current + 2;
+                    type = "5a + 4";
+                    operation = `7 × ${current} + 2 = ${nextNum}`;
+                    break;
+                case 1:
+                    nextNum = 7 * current + 3;
+                    type = "5a + 1";
+                    operation = `7 × ${current} + 3 = ${nextNum}`;
+                    break;
+                case 3:
+                    nextNum = 7 * current + 4;
+                    type = "5a + 3";
+                    operation = `7 × ${current} + 4 = ${nextNum}`;
+                    break;
+                default:
+                    nextNum = current;
+                    type = "ERROR";
+                    operation = "ERROR";
+            }
+        }
+
+        series.push({
+            iteration,
+            number: current,
+            type,
+            operation
+        });
+
+        current = nextNum;
+        iteration++;
+    }
+
+    // Add final state
+    series.push({
+        iteration,
+        number: current,
+        type: "Terminal",
+        operation: `Reached ${current}`
+    });
+
+    return series;
+}
+
 export const variants: CollatzVariant[] = [
     {
         name: "Collatz Classic",
@@ -290,5 +368,11 @@ export const variants: CollatzVariant[] = [
         id: "alternative",
         compute: computeCollatzAlternative,
         description: "A unique variation based on modulo 5. Numbers are transformed using different rules: if divisible by 5, divide by 5; otherwise multiply by 7 and add a constant based on the remainder. All sequences terminate at 11."
+    },
+    {
+        name: "Collatz Alternative A",
+        id: "alternative-a",
+        compute: computeCollatzAlternativeA,
+        description: "A modulo 5 variation where numbers divisible by 5 are divided by 5. Other numbers are transformed based on their remainder: multiply by 7 and add a specific constant. Sequences terminate at either 1 or 6."
     }
 ] 
